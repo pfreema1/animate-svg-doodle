@@ -1,3 +1,5 @@
+
+
 let WINDOW_WIDTH = window.innerWidth;
 let WINDOW_HEIGHT = window.innerHeight;
 
@@ -41,44 +43,6 @@ const moveYWithinBounds = (y, size) => {
   }
 }
 
-// rectangles
-// c.fillStyle = 'red';
-// c.fillRect(100, 100, 100, 100);
-// c.fillStyle = 'blue'
-// c.fillRect(30, 100, 100, 100);
-// c.fillRect(400, 100, 30, 50);
-
-
-// line
-// c.beginPath();
-// c.moveTo(50, 400);
-// c.lineTo(50, 50);
-// c.lineTo(300, 50);
-// c.lineTo(300, 200);
-// c.lineTo(150, 200);
-// c.lineTo(150, 400);
-// c.strokeStyle = 'yellow';
-// c.stroke();
-
-// arc
-// c.beginPath();
-// c.arc(450, 490, 30, 0, 2 * Math.PI, false);
-// c.strokeStyle = 'blue';
-// c.stroke();
-
-
-// c.strokeStyle = 'blue';
-// for(let i = 0; i < 200; i++) {
-//   c.beginPath();
-  
-//   let size = getRandomInt(1, 50);
-//   let x = moveXWithinBounds(getRandomInt(0, WINDOW_WIDTH), size);
-//   let y = moveYWithinBounds(getRandomInt(0, WINDOW_HEIGHT), size);
-
-//   c.arc(x, y, size, 0, 2 * Math.PI, false);
-//   c.stroke();
-// }
-
 const drawBoundedRandomPosCircles = (amountCircles, sizeMin, sizeMax) => {
   for(let i = 0; i < amountCircles; i++) {
     c.beginPath();
@@ -106,10 +70,11 @@ const drawBoundedRandomPosSquares = (amountSquares, sizeMin, sizeMax) => {
 }
 
 const drawBoundedRandomBezierCurves = (numPoints, drawPoints = false, connected = false) => {
+  let lastEndPoint;
   for(let i = 0; i < numPoints; i++) {
     c.beginPath();
 
-    let startPoint = {
+    let startPoint = lastEndPoint || {
       x: moveXWithinBounds(getRandomInt(0, WINDOW_WIDTH), 10),
       y: moveYWithinBounds(getRandomInt(0, WINDOW_HEIGHT), 10)
     };
@@ -125,6 +90,10 @@ const drawBoundedRandomBezierCurves = (numPoints, drawPoints = false, connected 
       x: moveXWithinBounds(getRandomInt(0, WINDOW_WIDTH), 10),
       y: moveYWithinBounds(getRandomInt(0, WINDOW_HEIGHT), 10)
     };
+
+    lastEndPoint = endPoint;
+
+    //draw curve
     c.moveTo(startPoint.x, startPoint.y);
     c.bezierCurveTo(
       controlPoint1.x,
@@ -156,9 +125,36 @@ const drawBoundedRandomBezierCurves = (numPoints, drawPoints = false, connected 
 
 // start
 (function() {
-  c.strokeStyle = 'purple';
 
   // drawBoundedRandomPosCircles(50, 2, 10);
   // drawBoundedRandomPosSquares(100, 2, 60);
-  drawBoundedRandomBezierCurves(1, true, false);
+  // drawBoundedRandomBezierCurves(10, false, false);
+
+  let x = 200;
+  let y = 200;
+  let dx = 10;
+  let dy = 4;
+  let radius = 30;
+  function animate() {
+    requestAnimationFrame(animate);
+    c.clearRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    
+    c.beginPath();
+    c.arc(x, y, radius, 0, 2 * Math.PI, false);
+    c.strokeStyle = 'purple';
+    c.stroke();
+
+    if(x + radius > WINDOW_WIDTH || x < 0) {
+      dx = -dx;
+    }
+
+    if(y + radius > WINDOW_HEIGHT || y < 0) {
+      dy = -dy;
+    }
+
+    x += dx;
+    y += dy;
+  }
+
+  animate();
 })();
