@@ -1,4 +1,12 @@
+let WINDOW_WIDTH = window.innerWidth;
+let WINDOW_HEIGHT = window.innerHeight;
+
 const canvas = document.querySelector('canvas');
+const c = canvas.getContext('2d');
+
+canvas.width = WINDOW_WIDTH;
+canvas.height = WINDOW_HEIGHT;
+
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -7,10 +15,31 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max-min)) + min;
 }
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const moveXWithinBounds = (x, size) => {
+  if(x < size) {
+    // element is overflowing off-screen to the left 
+    return size / 2;
+  } else if(x > WINDOW_HEIGHT - size) {
+    // element is overflowing off-screen to the right
+    return WINDOW_HEIGHT - size;
+  }
+  else {
+    return x;
+  }
+}
 
-const c = canvas.getContext('2d');
+const moveYWithinBounds = (y, size) => {
+  if(y < size) {
+    // element is overflowing off-screen to the left 
+    return size / 2;
+  } else if(y > WINDOW_WIDTH - size) {
+    // element is overflowing off-screen to the right
+    return WINDOW_WIDTH - size;
+  }
+  else {
+    return y;
+  }
+}
 
 // rectangles
 // c.fillStyle = 'red';
@@ -42,9 +71,10 @@ c.strokeStyle = 'blue';
 for(let i = 0; i < 200; i++) {
   c.beginPath();
   
-  let x = getRandomInt(0, window.innerWidth);
-  let y = getRandomInt(0, window.innerHeight);
   let size = getRandomInt(1, 200);
+  let x = getRandomInt(0, WINDOW_WIDTH);
+  let x = moveXWithinBounds(getRandomInt(0, WINDOW_WIDTH), size);
+  let y = moveYWithinBounds(getRandomInt(0, WINDOW_HEIGHT), size);
 
   c.arc(x, y, size, 0, 2 * Math.PI, false);
   c.stroke();
