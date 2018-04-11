@@ -162,3 +162,8 @@ svg {
   -webkit-transform: scale(1.5);
           transform: scale(1.5);
 }
+
+canvas {
+  border: 1px solid black;
+  /* background: red; */
+}
