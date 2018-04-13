@@ -123,6 +123,77 @@ const drawBoundedRandomBezierCurves = (numPoints, drawPoints = false, connected 
   }
 }
 
+let mouse = {
+  x: undefined,
+  y: undefined
+};
+document.addEventListener('mousemove', (e) => {
+  // console.log(e);
+  mouse.x = e.x;
+  mouse.y = e.y;
+});
+
+function Circle(x, y, dx, dy, radius) {
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = radius;
+  this.origRadius = radius;
+
+  this.draw = function() {
+    c.beginPath();
+    c.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+    c.strokeStyle = 'purple';
+    c.fillStyle = 'purple';
+    c.fill();
+    c.stroke();
+  }
+
+  this.update = function() {
+    if(this.x + this.radius > WINDOW_WIDTH || this.x < this.radius) {
+      this.dx = -this.dx;
+    }
+
+    if(this.y + this.radius > WINDOW_HEIGHT || this.y < this.radius) {
+      this.dy = -this.dy;
+    }
+
+    this.x += this.dx;
+    this.y += this.dy;
+
+    let xDistanceElToMouse = Math.abs(this.x - mouse.x);
+
+    if(xDistanceElToMouse < 50) {
+    // distance from this element to mouse is < 50
+      if(this.radius < this.origRadius + 35) {
+        this.radius += 0.5;
+      }
+    } else if(this.radius > this.origRadius) {
+
+      this.radius -= 1;
+    }
+
+    this.draw();
+  }
+}
+
+const createArrayOfCircles = (numCircles) => {
+  let arrayOfCircles = [];
+
+  
+  for(let i = 0; i < numCircles; i++) {
+    let radius = getRandomInt(5, 30);
+    let x = moveXWithinBounds(getRandomInt(0, WINDOW_WIDTH), radius);
+    let y = moveYWithinBounds(getRandomInt(0, WINDOW_HEIGHT), radius);
+    let dx = getRandomInt(1, 3);
+    let dy = getRandomInt(1, 3);
+    arrayOfCircles.push(new Circle(x, y, dx, dy, radius));
+  }
+
+  return arrayOfCircles;
+}
+
 // start
 (function() {
 
@@ -130,30 +201,21 @@ const drawBoundedRandomBezierCurves = (numPoints, drawPoints = false, connected 
   // drawBoundedRandomPosSquares(100, 2, 60);
   // drawBoundedRandomBezierCurves(10, false, false);
 
-  let x = 200;
-  let y = 200;
-  let dx = 10;
-  let dy = 4;
-  let radius = 30;
+  
+
+  let arrayOfCircles = createArrayOfCircles(50);
+
   function animate() {
     requestAnimationFrame(animate);
     c.clearRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    for(let i = 0; i < arrayOfCircles.length; i++) {
+      arrayOfCircles[i].update();
+    }
+
+    // circle.draw();
+    // circle.update();
     
-    c.beginPath();
-    c.arc(x, y, radius, 0, 2 * Math.PI, false);
-    c.strokeStyle = 'purple';
-    c.stroke();
-
-    if(x + radius > WINDOW_WIDTH || x < 0) {
-      dx = -dx;
-    }
-
-    if(y + radius > WINDOW_HEIGHT || y < 0) {
-      dy = -dy;
-    }
-
-    x += dx;
-    y += dy;
   }
 
   animate();
