@@ -144,6 +144,26 @@ const drawBoundedRandomBezierCurves = (
  **		input listeners
  ******************************/
 
+let bulletTime = 1;
+
+const mousedown = e => {
+  if (mousedownId == -1) mousedownId = setInterval(whilemousedown, 100);
+};
+
+const mouseup = e => {
+  // check if we are running an interval
+  if (mousedownId !== -1) {
+    clearInterval(mousedownId);
+    mousedownId = -1;
+  }
+  bulletTime = 1;
+};
+
+const whilemousedown = () => {
+  console.log("mousing down breh!");
+  bulletTime = 0.5;
+};
+
 let mouse = {
   x: undefined,
   y: undefined
@@ -153,10 +173,11 @@ document.addEventListener("mousemove", e => {
   mouse.x = e.x;
   mouse.y = e.y;
 });
+document.addEventListener("mousedown", mousedown);
+document.addEventListener("mouseup", mouseup);
+document.addEventListener("mouseout", mouseup);
 
-document.addEventListener("mousedown", e => {
-  console.log("we clickin now boys");
-});
+let mousedownId = -1; //Global Id of mouse down interval
 
 /*****************************/
 
@@ -231,8 +252,8 @@ function Circle(x, y, dx, dy, radius, opacity, color) {
       this.dy = -this.dy;
     }
 
-    this.x += this.dx;
-    this.y += this.dy;
+    this.x += this.dx * bulletTime;
+    this.y += this.dy * bulletTime;
 
     let xDistanceElToMouse = Math.abs(this.x - mouse.x);
 
