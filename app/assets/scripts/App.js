@@ -1,3 +1,4 @@
+const COLOR_ARRAY = ["#B3001B", "#D6BA73", "#345C94", "#85A3C9"];
 let WINDOW_WIDTH = window.innerWidth;
 let WINDOW_HEIGHT = window.innerHeight;
 
@@ -141,7 +142,7 @@ const drawBoundedRandomBezierCurves = (
 };
 
 /*****************************
- **		input listeners
+ **		event listeners
  ******************************/
 
 let bulletTime = 1;
@@ -160,7 +161,7 @@ const mouseup = e => {
 };
 
 const whilemousedown = () => {
-  console.log("mousing down breh!");
+  // console.log("mousing down breh!");
   bulletTime = 0.5;
 };
 
@@ -176,6 +177,13 @@ document.addEventListener("mousemove", e => {
 document.addEventListener("mousedown", mousedown);
 document.addEventListener("mouseup", mouseup);
 document.addEventListener("mouseout", mouseup);
+window.addEventListener("resize", () => {
+  console.log("resizing");
+  WINDOW_HEIGHT = window.innerHeight;
+  WINDOW_WIDTH = window.innerWidth;
+  canvas.width = WINDOW_WIDTH;
+  canvas.height = WINDOW_HEIGHT;
+});
 
 let mousedownId = -1; //Global Id of mouse down interval
 
@@ -304,8 +312,9 @@ const initGame = arrayOfCircles => {
     let dx = getRandomInt(1, 3);
     let dy = getRandomInt(1, 3);
     let opacity = Math.random();
-    arrayOfCircles.push(new Circle(x, y, dx, dy, radius, opacity, "purple"));
-  }, 200);
+    let color = COLOR_ARRAY[getRandomInt(0, COLOR_ARRAY.length)];
+    arrayOfCircles.push(new Circle(x, y, dx, dy, radius, opacity, color));
+  }, 100);
 };
 
 let arrayOfCircles;
@@ -313,7 +322,7 @@ let arrayOfCircles;
 // start
 (function() {
   arrayOfCircles = []; //createArrayOfCircles(500);
-  let marker = new Marker(50, 50, 0, 0, 20, 1, "black");
+  let marker = new Marker(50, 50, 0, 0, 20, 1, "#262626");
 
   function animate() {
     requestAnimationFrame(animate);
